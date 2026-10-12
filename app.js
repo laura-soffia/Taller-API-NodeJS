@@ -1,8 +1,7 @@
 import express from "express"
 import "dotenv/config"
-import routerProduts from "./routes/produts.routes.js"
-import routerStores from "./routes/stores.routes.js"
-import {conex} from  "./db/config.js"
+import routerUsers from "./routes/users.routes.js"
+import {conex} from  "./database/config.js"
 
 
 class Server {
@@ -25,12 +24,7 @@ class Server {
 
 
     routes() {
-        //     this.app.get("/", (req, res) => {
-        //     res.send("Hola Mundo")
-        // })
-
-        this.app.use("/api/produts", routerProduts)
-        this.app.use("/api/stores", routerStores)
+        this.app.use("/api/auth/", routerUsers)
 
 
       
