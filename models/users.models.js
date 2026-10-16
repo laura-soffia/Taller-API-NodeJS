@@ -30,8 +30,8 @@ const UserSchema = new Schema({
 
     role: {
         type: String,
-        enum: ["User", "Admin", "Editor"],
-        default: "User"
+        enum: ["USER", "ADMIN"],
+        default: "USER"
     },
 
     active: {
@@ -39,7 +39,8 @@ const UserSchema = new Schema({
         default: true
     }
 }, {
-    timestamps: true // Añade automáticamente createdAt y updatedAt o se aajusta las fechas 
+    timestamps: true,// Añade automáticamente createdAt y updatedAt o se aajusta las fechas 
+    versionKey: false  // sirve para llevar un control de verciones util para cuando se traba en grupo 
 });
 
 

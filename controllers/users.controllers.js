@@ -1,13 +1,13 @@
 import User from '../models/users.models.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcryptjs";
-import { exit } from 'node:process';
 
 export const register = async (req, res, next) => {
 
     try {
+        const { name, email, password } = req.body;
 
-        const user = await User.create(req.body)
+        const user = await User.create({ name, email, password, role: 'USER' });
 
         const token = jwt.sign(
             { id: user._id, role: user.role },
@@ -17,12 +17,12 @@ export const register = async (req, res, next) => {
 
         res.status(201).json({
             ok: true,
-            usuario: user.email,
+            data: user,
             token
-        })
+        });
 
     } catch (error) {
-        next(error)
+        next(error);
     }
 }
 
@@ -30,26 +30,18 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
 
     try {
-
         const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({
-                ok: false,
-                msg: "Email y contraseña son obligatorios"
-            });
-        }
 
         const user = await User.findOne({ email });
 
-        if (!user) {
-            return res.status(401).json({ ok: false, msg: "Datos incorrectos" });
+        if (!user || !user.active) {
+            return res.status(401).json({ ok: false, msg: 'Credenciales inválidas' });
         }
 
         const passwordValida = await bcrypt.compare(password, user.password);
 
         if (!passwordValida) {
-            return res.status(401).json({ ok: false, msg: "Datos incorrectos" });
+            return res.status(401).json({ ok: false, msg: 'Credenciales inválidas' });
         }
 
         const token = jwt.sign(
@@ -60,10 +52,10 @@ export const login = async (req, res, next) => {
 
         res.status(200).json({
             ok: true,
-            email: user.email,
-            role: user.role,
+            data: user,
             token
         });
+
     } catch (error) {
         next(error);
     }
@@ -73,21 +65,18 @@ export const getUserMe = async (req, res, next) => {
 
     try {
 
-        const user = await User.findById(req.params.id)
+        const user = await User.findById(req.user)
 
-        const token = req.header('x-token')
-
-
-        if (!store) {
+        if (!user) {
             return res.status(404).json({
                 ok: false,
-                msg: "tienda no encontrada"
+                msg: "Usuario no encontrado"
             })
         }
 
         res.status(200).json({
             ok: true,
-            store
+            user
 
         })
 
@@ -96,23 +85,21 @@ export const getUserMe = async (req, res, next) => {
     }
 }
 
-export const getUser = async (req, res, next) => {
+export const getUsers = async (req, res, next) => { // falta investigar como hacer este 
 
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
-        const store = await Store.findByIdAndUpdate(req.params.id, req.body, { new: true })
-
-        if (!store) {
-            res.status(404).json({
-                ok: false,
-                msg: "tienda no encontrada"
-            })
-        }
+        const user = await User.find().skip(skip).limit(limit)
+        const totalUsers = await User.countDocuments();
 
         res.status(200).json({
             ok: true,
-            store
-
+            data: user,
+            page,
+            totalPages: Math.ceil(totalUsers / limit)
         })
 
     } catch (error) {
@@ -124,25 +111,29 @@ export const getUser = async (req, res, next) => {
 export const updateRole = async (req, res, next) => {
 
     try {
+        const { role } = req.body;
 
-        const store = await Store.findByIdAndDelete(req.params.id)
+        if (role !== "ADMIN" || role !== "USER") {
+            return res.status(400).json({ ok: false, msg: 'Por favor ingrese un rol valido' });
+        }
 
-        if (!store) {
-            res.status(404).json({
-                ok: false,
-                msg: "tienda no encontrada"
-            })
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { role },
+            { returnDocument: 'after', runValidators: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ ok: false, msg: 'Usuario no encontrado' });
         }
 
         res.status(200).json({
             ok: true,
-            msg: "tienda eliminada correctamente"
-
-
-        })
+            data: user
+        });
 
     } catch (error) {
-        next(error)
+        next(error);
     }
 }
 

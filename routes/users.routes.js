@@ -1,30 +1,12 @@
-
-
-import { Router } from "express";
-import { register, login,getUserMe, getUser } from "../controllers/users.controllers.js";
-
-
-const router = Router()
-
-router.post("/register", register)
-
-router.post("/login", login)
-
-router.get("/me/:token", getUser)
-
-
-
-// router.post("/", [store, name, price, stock, productId, validarCampos], createProduts)
-
-// router.get("/:id", [productId, validarCampos], findById)
-
-// router.put("/:id", [productId, validarCampos], updateProdut)
-
-// router.delete("/:id", [productId, validarCampos], deleteProdut)
-
-// router.patch("/:id", [productId, validarCampos], updateOneProdut)
-
-
-
-
-export default router
+import { Router } from 'express';
+import { getUsers, updateRole } from '../controllers/users.controllers.js';
+import { validarJWT } from '../middlewares/validarJWT.js';
+import { tieneRol } from '../middlewares/tieneRol.js';
+import {  id, role } from "../validators/users.validator.js";
+ 
+const router = Router();
+ 
+router.get('/', [ validarJWT, tieneRol('ADMIN')], getUsers);
+router.patch('/:id/role', [id, role, validarJWT, tieneRol('ADMIN')], updateRole);
+ 
+export default router;
