@@ -1,0 +1,130 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "trabajo api",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "registro",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "registro",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Luka",
+                "email": "lukanet@g.com",
+                "password": "contraseña1234"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "login",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "aco@re.com",
+                "password": "contraseña"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "summary": "authMe",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "authMe",
+        "parameters": [
+          {
+            "name": "x-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzk1ZGJhNDhkMjBlZWY0ODQ0NDhkZCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc5MjExNzM5NSwiZXhwIjoxNzkyMTI0NTk1fQ.7QsFlDL2AzOIs00puxt1nwbXUW-q1qMQ-h633eAQqt0"
+          }
+        ]
+      }
+    },
+    "/api/users/6ad181967293a7a195b4141a/role": {
+      "patch": {
+        "summary": "updateRole",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "name": "x-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzk2MTE1ODdlNWYxY2MyODQxMWE1NSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc5MjExNTM0OCwiZXhwIjoxNzkyMTIyNTQ4fQ.7V2eBWJbusmaNyee_ahKK3aaZffuSktN-p0vCC5mZsU"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "role": "USER"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "summary": "listarUsers",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "operationId": "listarUsers",
+        "parameters": [
+          {
+            "name": "x-token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzk1ZGJhNDhkMjBlZWY0ODQ0NDhkZCIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc5MjExNzM5NSwiZXhwIjoxNzkyMTI0NTk1fQ.7QsFlDL2AzOIs00puxt1nwbXUW-q1qMQ-h633eAQqt0"
+          }
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3160"
+    }
+  ]
+}
