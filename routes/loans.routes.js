@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import { validarJWT, esAdmin } from "../middlewares/auth.js"; // ajustar a los nombres reales
+import { validarJWT } from "../middlewares/validarJWT.js";
+import { tieneRol } from "../middlewares/tieneRol.js";
 //Trae dos controles de tus compañeros: validarJWT revisa que haya token y esAdmin revisa que el usuario sea ADMIN.
 
-import { validarCampos } from "../middlewares/validar_campos.js";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 import { bookBody, loanId, statusQuery, pagination } from "../validators/loans.validators.js";
 //Trae las revisiones de datos: que book sea un id válido, que :id sea válido, que status sea ACTIVE o RETURNED, y que page y limit sean números.
@@ -11,6 +12,7 @@ import { bookBody, loanId, statusQuery, pagination } from "../validators/loans.v
 import { createLoan, getMyLoans, getLoans, getOverdueLoans, returnLoan, renewLoan, getTopBooks } from "../controllers/loans.controller.js";
 
 const router = Router();
+const esAdmin = tieneRol("ADMIN");
 
 // Rutas fijas /me, /overdue SIEMPRE antes de /:id
 router.post("/", [validarJWT, bookBody, validarCampos], createLoan);

@@ -2,6 +2,9 @@ import express from "express"
 import "dotenv/config"
 import routerUsers from "./routes/users.routes.js"
 import routerAuth from "./routes/auth.routes.js"
+import routerLoans from "./routes/loans.routes.js"
+import routerAuthors from "./routes/authors.routes.js"
+import routerBooks from "./routes/books.routes.js"
 import { conex } from "./database/config.js"
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errores.js';
@@ -30,6 +33,9 @@ class Server {
     routes() {
         this.app.use('/api/auth', routerAuth);
         this.app.use('/api/users', routerUsers);
+        this.app.use('/api/loans', routerLoans);
+        this.app.use('/api/authors', routerAuthors);
+        this.app.use('/api/books', routerBooks);
         this.app.use(notFound);
     }
 

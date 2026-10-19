@@ -113,7 +113,7 @@ export const updateRole = async (req, res, next) => {
     try {
         const { role } = req.body;
 
-        if (role !== "ADMIN" || role !== "USER") {
+        if (role !== "ADMIN" && role !== "USER") {
             return res.status(400).json({ ok: false, msg: 'Por favor ingrese un rol valido' });
         }
 
