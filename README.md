@@ -15,10 +15,7 @@ API REST de la biblioteca (Node.js, Express y MongoDB).
 
 Para hacer casi todo (menos registrarse y entrar) hay que mandar el token que se recibe en el login.
 
-- Endpoints de usuarios: el token va en el header `x-token`.
-- Endpoints de préstamos: el token va en el header `Authorization: Bearer <token>`.
-
-Nota: las rutas protegidas de esta API leen el token desde el header `x-token`.
+- Todos los endpoints protegidos (usuarios, autores, libros y préstamos) leen el token desde el header `x-token`.
 
 ## Usuarios
 
