@@ -6,6 +6,8 @@ API REST de la biblioteca (Node.js, Express y MongoDB).
 
 - [Autenticación](#autenticación)
 - [Usuarios](#usuarios)
+- [Autores](#autores)
+- [Libros](#libros)
 - [Préstamos](#préstamos)
 - [Pruebas](#pruebas)
 
@@ -15,6 +17,8 @@ Para hacer casi todo (menos registrarse y entrar) hay que mandar el token que se
 
 - Endpoints de usuarios: el token va en el header `x-token`.
 - Endpoints de préstamos: el token va en el header `Authorization: Bearer <token>`.
+
+Nota: las rutas protegidas de esta API leen el token desde el header `x-token`.
 
 ## Usuarios
 
@@ -72,6 +76,33 @@ PATCH /api/users/:id/role
 - Si no eres Admin, no puedes ver la lista de usuarios ni cambiar el rol de nadie; te va a salir un error.
 - La contraseña se guarda protegida, no se guarda tal cual la escribiste.
 
+## Autores
+
+Base: `/api/authors`. Las consultas son públicas; para crear, actualizar o eliminar autores se requiere un token de administrador en el header `x-token`.
+
+| Método | Ruta | Acceso | Descripción |
+|---|---|---|---|
+| GET | `/api/authors` | Público | Lista los autores activos |
+| GET | `/api/authors/:id` | Público | Obtiene un autor y sus libros activos |
+| POST | `/api/authors` | ADMIN | Crea un autor. Body: `{ "name": "Luisa Perez", "nationality": "Mexicana", "birthYear": 1980 }` |
+| PUT | `/api/authors/:id` | ADMIN | Actualiza los datos del autor |
+| DELETE | `/api/authors/:id` | ADMIN | Desactiva el autor; no se puede desactivar si tiene libros activos |
+
+## Libros
+
+Base: `/api/books`. Las consultas son públicas; para crear, actualizar o eliminar libros se requiere un token de administrador en el header `x-token`.
+
+| Método | Ruta | Acceso | Descripción |
+|---|---|---|---|
+| GET | `/api/books` | Público | Lista los libros activos e incluye el nombre del autor |
+| GET | `/api/books/available` | Público | Lista los libros activos con copias disponibles |
+| GET | `/api/books/:id` | Público | Obtiene un libro activo y sus datos de autor |
+| POST | `/api/books` | ADMIN | Crea un libro. Body: `{ "title": "El loco ananias", "isbn": "9780307478733", "author": "<id del autor>", "genre": "novela", "year": 2018, "totalCopies": 4 }` |
+| PUT | `/api/books/:id` | ADMIN | Actualiza los datos del libro |
+| DELETE | `/api/books/:id` | ADMIN | Desactiva el libro |
+
+Al crear un libro, `availableCopies` se inicializa con el valor de `totalCopies`. Al actualizar `totalCopies`, no puede quedar por debajo del número de copias que están prestadas.
+
 ## Préstamos
 
 Base: `/api/loans`. Todos los endpoints requieren token.
@@ -105,4 +136,4 @@ El usuario sale del token (`req.user`), nunca del body. `dueDate` = `loanDate` +
 
 ## Pruebas
 
-La colección de Hoppscotch está en `docs/prestamos.collection.json` (Importar → Postman). Configura las variables `baseUrl`, los tokens y los ids de libros/préstamos.
+Las colecciones de Hoppscotch están en `docs/autoresLibros.collection.json`, `docs/prestamos.collection.json` y `docs/users.collection.json` (Importar → Postman). Configura los tokens y los ids necesarios para ejecutar las peticiones.
